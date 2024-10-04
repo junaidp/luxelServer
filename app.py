@@ -1,14 +1,28 @@
+from http.client import HTTPException
+
 from llama_index.core.base.response.schema import StreamingResponse
 from llama_index.llms.anthropic import Anthropic
 from flask import Flask, request, Response, stream_with_context
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.core.memory import ChatMemoryBuffer
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-
+from llama_index.llms.openai import OpenAI
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
 memory = ChatMemoryBuffer.from_defaults(token_limit=2000)
+
+# MongoDB Connection
+try:
+    mongo_client = MongoClient(
+        "mongodb+srv://junaidp:sYfxGXcHFWnsuZPi@cluster0-wxkrw.mongodb.net/data-entry?retryWrites=true&w=majority")
+    db = mongo_client['data-entry']  # database name
+    group_collection = db['group']  # collection name
+    print("MongoDB connection successful")
+except Exception as e:
+    print(f"Error connecting to MongoDB: {str(e)}")
+    raise
 
 
 @app.route('/store')
@@ -22,11 +36,36 @@ def store():
     return "stored"
 
 
-@app.route('/chat')
-def hello():
-    query = request.json.get('query')
-    customer_data = request.json.get('customer_data')
-    customer = customer_data['customers'][0]
+@app.get("/chat")
+def chat():
+    try:
+        print('here')
+        query = request.json.get('query')
+        customerId = request.json.get('customerId')
+        # Find the Group document for the customer
+        group = group_collection.find_one({"_id": customerId})
+
+        if not group:
+            raise HTTPException(status_code=404, detail="Group not found for the customer")
+
+        # Set the group data in chat_input
+        #  chat_input.customer_Data = group
+
+        # Process chat and get response
+        chat_response = doChat(query, group)
+
+        return chat_response
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
+
+
+# @app.route('/doChat')
+def doChat(query, group):
+    customer = group['customers'][0]
+    print(customer)
     passions = ', '.join(customer.get('passions', []));
     interests = ', '.join(customer.get('mainInterests', []));
     lifestyle = ', '.join(customer.get('lifestyle', []));
@@ -40,8 +79,8 @@ def hello():
     dep_travelSpan = ', '.join(dependent.get('travelSpan', []));
     dep_travelBucket = ', '.join(dependent.get('travelBucketList', []));
 
-    # llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
-    llm = Anthropic(model="claude-3-opus-20240229", temperature=0)
+    llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
+   # llm = Anthropic(model="claude-3-opus-20240229", temperature=0)
     storage_context = StorageContext.from_defaults(persist_dir="storage")
     index = load_index_from_storage(storage_context)
 
@@ -71,7 +110,12 @@ def hello():
                 "8. Always consider that customer is traveling near Paris, and don’t ask this question."
                 "9. Only suggest the experiences which are in the context.Do not suggest anything which is not the in the context"
                 "10. Suggest ALL the experiences which have in these interests: " + interests + ",  Passions i.e " + passions + ",  lifestyle i.e " + lifestyle + ". Also consider the travelSpan i.e " + travelSpan + " and my travelBucket List i.e: " + travelBucket + ""
-                                                                                                                                                                                                                                                                          "  dependent i.e" + dependent_Name + "'s interests , i.e " + dep_interests + ", " + dependent_Name + "'s Passions i.e " + dep_passions + ", " + dependent_Name + "'s lifestyle i.e " + dep_lifestyle + ". Also consider " + dependent_Name + "'s travelSpan i.e " + dep_travelSpan + " and " + dependent_Name + "'s travelBucket List i.e: " + dep_travelBucket + ""
+                 "11. Also show page Number with every suggested experience , on the page where that experience is in pdf"
+                 "12. For every suggested experience look for its ID on that same page , and write that as well in your response"
+                 "13. For every suggested experience ,Also mention Why you suggest this experience , i.e Which interest aligns with this experience"
+                 "14. You must provide the 'ID' and its respective 'Title' fields of the suggested experiences,  Exactly as they are written in the context. Your given ID and Title must be available in the document "
+                 "Here are the relevant documents for the context:\n"
+                 "{context_str}"                                                                                                                                                                                                                                                         "  dependent i.e" + dependent_Name + "'s interests , i.e " + dep_interests + ", " + dependent_Name + "'s Passions i.e " + dep_passions + ", " + dependent_Name + "'s lifestyle i.e " + dep_lifestyle + ". Also consider " + dependent_Name + "'s travelSpan i.e " + dep_travelSpan + " and " + dependent_Name + "'s travelBucket List i.e: " + dep_travelBucket + ""
         ),
         verbose=False,
     )
@@ -82,6 +126,7 @@ def hello():
             yield token
 
     return Response(generate_response(), content_type='text/plain')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
