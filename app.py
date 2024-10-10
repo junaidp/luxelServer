@@ -16,7 +16,7 @@ memory = ChatMemoryBuffer.from_defaults(token_limit=2000)
 # MongoDB Connection
 try:
     mongo_client = MongoClient(
-        "mongodb+srv://junaidp:sYfxGXcHFWnsuZPi@cluster0-wxkrw.mongodb.net/data-entry?retryWrites=true&w=majority")
+        "mongodb+srv://junaidp:sYfxG@cluster0-wxkrw.mongodb.net/data-entry?retryWrites=true&w=majority")
     db = mongo_client['data-entry']  # database name
     group_collection = db['group']  # collection name
     print("MongoDB connection successful")
