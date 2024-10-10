@@ -41,10 +41,13 @@ def chat():
     try:
         print('here')
         query = request.json.get('query')
+        newSession = request.json.get('session')
         customerId = request.json.get('customerId')
         # Find the Group document for the customer
         group = group_collection.find_one({"_id": customerId})
-
+        if newSession:
+            print("new session")
+            memory.reset()
         if not group:
             raise HTTPException(status_code=404, detail="Group not found for the customer")
 

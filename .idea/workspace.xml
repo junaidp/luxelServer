@@ -78,7 +78,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728028452722</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="req updated">
+      <option name="closed" value="true" />
+      <created>1728598433085</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1728598433085</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -91,7 +99,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>64</line>
+          <line>67</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
