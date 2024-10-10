@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2e2bfc15-fec9-45d6-b821-9ed4c72518ab" name="Changes" comment="luxel start">
+    <list default="true" id="2e2bfc15-fec9-45d6-b821-9ed4c72518ab" name="Changes" comment="req updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -62,12 +62,29 @@
       <option name="project" value="LOCAL" />
       <updated>1727809505532</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="luxel start">
+      <option name="closed" value="true" />
+      <created>1728027829165</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1728027829165</updated>
+    </task>
+    <task id="LOCAL-00003" summary="req updated">
+      <option name="closed" value="true" />
+      <created>1728028452722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1728028452722</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="luxel start" />
-    <option name="LAST_COMMIT_MESSAGE" value="luxel start" />
+    <MESSAGE value="req updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="req updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
